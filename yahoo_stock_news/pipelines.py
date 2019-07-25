@@ -10,35 +10,34 @@ from scrapy.exceptions import DropItem
 import csv
 
 class YahooStockNewsPipeline(object):
-    # def process_item(self, item, spider):
-        # now = time.strftime("%Y-%m-%d", time.localtime())
-        # filename = "tw_stock_news" + now + ".csv"
-        # with open(filename, "a") as f:
-        #     f.write("item['date']" + "\t")
-        #     f.write("item['code']" + "\t")
-        #     f.write("item['company']" + "\t")
-        #     f.write("item['source']" + "\t")
-        #     f.write("item['title']" + "\t")
-        #     f.write("item['content']" + "\n")
-        # return item
+    exclude = ["【公告】", "《證交所》"] # 建立需要排除的關鍵字清單
+
     def open_spider(self, spider):
         self.file = open('stock_news.json', 'a')
-
-
-
 
     def process_item(self, item, spider):
         title = item['title']
         with open("stock_news.json", "r") as f:
             for line in f.readlines():
                 data = json.loads(line)
-                if title in data['title']:
+                if title  in data['title']:
                     raise DropItem('發現重複標題 %s', item)
-        content = json.dumps(dict(item), ensure_ascii=False) + "\n"
-        # if item['title'] in content:
-        #     raise DropItem("此標題'{}'已經出現過了!!".format(item['title']))
-        self.file.write(content)
-        return item
+        if YahooStockNewsPipeline.containsKeyword(title):
+            raise DropItem('沒有用的新聞 %s', item)
+        else:
+            content = json.dumps(dict(item), ensure_ascii=False) + "\n"
+            self.file.write(content)
+            return item
+    '''
+    建立關鍵字排除的method
+    '''
+    @classmethod
+    def containsKeyword(cls, title):
+        for keyword in cls.exclude:
+            if keyword in title:
+                return True
+        return False
+
 
     def close_spider(self, spider):
         self.file.close()
