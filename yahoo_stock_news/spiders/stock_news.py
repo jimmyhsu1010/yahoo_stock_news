@@ -22,7 +22,7 @@ class StockNewsSpider(scrapy.Spider):
     #     data = csv.reader(f, delimiter="\t")
     data = df[0]
     for d in data:
-        for p in range(1, 2):
+        for p in range(1, 51):
             start_urls.append("https://tw.stock.yahoo.com/q/h?s=" + str(d) + "&pg=" + str(p))
 
 

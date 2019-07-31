@@ -10,7 +10,7 @@ from scrapy.exceptions import DropItem
 import csv
 
 class YahooStockNewsPipeline(object):
-    exclude = ["【公告】", "《證交所》"] # 建立需要排除的關鍵字清單
+    exclude = ["【公告】", "《證交所》", "上市認購(售)權證", "國際匯市"] # 建立需要排除的關鍵字清單
 
     def open_spider(self, spider):
         self.file = open('stock_news.json', 'a')
@@ -20,7 +20,7 @@ class YahooStockNewsPipeline(object):
         with open("stock_news.json", "r") as f:
             for line in f.readlines():
                 data = json.loads(line)
-                if title  in data['title']:
+                if title in data['title']:
                     raise DropItem('發現重複標題 %s', item)
         if YahooStockNewsPipeline.containsKeyword(title):
             raise DropItem('沒有用的新聞 %s', item)
