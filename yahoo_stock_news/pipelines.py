@@ -32,7 +32,7 @@ class YahooStockNewsPipeline(object):
         else:
             content = json.dumps(dict(item), ensure_ascii=False) + "\n"
             self.file.write(content)
-            self.collection.insert(content)
+            self.collection.insert(dict(item))
             return item
     '''
     建立關鍵字排除的method
