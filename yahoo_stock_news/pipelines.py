@@ -8,12 +8,17 @@ import time
 import json
 from scrapy.exceptions import DropItem
 import csv
+import pymongo
+
 
 class YahooStockNewsPipeline(object):
     exclude = ["【公告】", "《證交所》", "上市認購(售)權證", "國際匯市"] # 建立需要排除的關鍵字清單
 
     def open_spider(self, spider):
         self.file = open('stock_news.json', 'a')
+        client = pymongo.MongoClient("mongodb://db102stock:db102stock_pwd@10.120.14.28:27017/stock")
+        db = client.stock
+        self.collection = db.stock_news
 
     def process_item(self, item, spider):
         title = item['title']
@@ -27,6 +32,7 @@ class YahooStockNewsPipeline(object):
         else:
             content = json.dumps(dict(item), ensure_ascii=False) + "\n"
             self.file.write(content)
+            self.collection.insert(content)
             return item
     '''
     建立關鍵字排除的method
@@ -56,3 +62,6 @@ class BooksPipeline(object):
 
     def close(self,spider):
         self.f.close()
+
+
+
