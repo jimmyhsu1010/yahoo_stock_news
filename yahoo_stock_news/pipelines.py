@@ -12,7 +12,7 @@ import pymongo
 
 
 class YahooStockNewsPipeline(object):
-    exclude = ["【公告】", "《證交所》", "上市認購(售)權證", "國際匯市"] # 建立需要排除的關鍵字清單
+    exclude = ["【公告】", "《證交所》", "上市認購(售)權證", "國際匯市", "證交所鉅額交易日"] # 建立需要排除的關鍵字清單
 
     def open_spider(self, spider):
         self.file = open('stock_news.json', 'a')
