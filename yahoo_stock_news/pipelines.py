@@ -16,7 +16,7 @@ class YahooStockNewsPipeline(object):
 
     def open_spider(self, spider):
         self.file = open('stock_news.json', 'a')
-        client = pymongo.MongoClient("mongodb://db102stock:db102stock_pwd@10.120.14.28:27017/stock")
+        client = pymongo.MongoClient("mongodb://db102stock:db102stock_pwd@10.120.14.18:27017/stock")
         db = client.stock
         self.collection = db.stock_news
 
